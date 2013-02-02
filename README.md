@@ -2,6 +2,10 @@
 
 Something is a client-side HTTP load balancer. That something has no name. This is unfortunate.
 
+[![Code Climate](https://codeclimate.com/github/mkb/unnamed.png)](https://codeclimate.com/github/mkb/unnamed)
+[![Build Status](https://travis-ci.org/mkb/unnamed.png?branch=master)](https://travis-ci.org/mkb/unnamed)
+[![Dependency Status](https://gemnasium.com/mkb/unnamed.png)](https://gemnasium.com/mkb/unnamed)
+
 ## Installation
 
 Add this line to your application's Gemfile:
@@ -18,7 +22,7 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+TODO: Come up with a name.
 
 ## Running the tests
 
