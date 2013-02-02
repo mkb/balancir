@@ -20,6 +20,18 @@ Or install it yourself as:
 
 TODO: Write usage instructions here
 
+## Running the tests
+
+    bundle
+    bundle exec guard
+    # Hack away in another window. Guard will re-run tests as needed.
+
+Or alternately:
+
+    bundle
+    bundle exec rspec
+    # Lament that you are not using Guard.
+
 ## Contributing
 
 1. Fork it
