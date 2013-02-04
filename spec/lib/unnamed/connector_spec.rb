@@ -5,7 +5,7 @@ require 'unnamed/connector'
 describe Unnamed::Connector do
   before :all do
     fake_server = File.expand_path('./spec/support/fake_working_service.ru')
-    @server = RealWeb.start_server(fake_server)
+    @server = RealWeb.start_server_in_thread(fake_server)
   end
 
   after :all do
