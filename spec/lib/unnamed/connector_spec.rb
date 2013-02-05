@@ -14,4 +14,6 @@ describe Unnamed::Connector do
 
   it 'handles 500'
   it 'handles Errno::ECONNRESET'
+  # Errno::ETIMEDOUT, Errno::ECONNREFUSED, Errno::EHOSTUNREACH, Errno::EAFNOSUPPORT
+  # need to support HMAC
 end
