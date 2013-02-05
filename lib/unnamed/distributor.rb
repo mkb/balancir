@@ -11,7 +11,10 @@ module Unnamed
     end
 
     def get(path)
-      @connectors.first.get(path)
+      response = @connectors.first.get(path)
+      if (500..599).include? response.status
+        @connectors.first.record_error
+      end
     end
   end
 end
