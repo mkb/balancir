@@ -12,8 +12,6 @@ describe Unnamed::Connector do
     @server.stop
   end
 
-  it 'handles 500'
-  it 'handles Errno::ECONNRESET'
-  # Errno::ETIMEDOUT, Errno::ECONNREFUSED, Errno::EHOSTUNREACH, Errno::EAFNOSUPPORT
+  pending 'error recording'
   # need to support HMAC
 end
