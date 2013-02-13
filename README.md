@@ -1,16 +1,16 @@
-# Unnamed
+# Balancir
 
-Something is a client-side HTTP load balancer. That something has no name. This is unfortunate.
+Balancir is a client-side HTTP load balancer.
 
-[![Code Climate](https://codeclimate.com/github/mkb/unnamed.png)](https://codeclimate.com/github/mkb/unnamed)
-[![Build Status](https://travis-ci.org/mkb/unnamed.png?branch=master)](https://travis-ci.org/mkb/unnamed)
-[![Dependency Status](https://gemnasium.com/mkb/unnamed.png)](https://gemnasium.com/mkb/unnamed)
+[![Code Climate](https://codeclimate.com/github/mkb/balancir.png)](https://codeclimate.com/github/mkb/balancir)
+[![Build Status](https://travis-ci.org/mkb/balancir.png?branch=master)](https://travis-ci.org/mkb/balancir)
+[![Dependency Status](https://gemnasium.com/mkb/balancir.png)](https://gemnasium.com/mkb/balancir)
 
 ## Installation
 
 Add this line to your application's Gemfile:
 
-    gem 'unnamed'
+    gem 'balancir'
 
 And then execute:
 
@@ -18,7 +18,7 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install unnamed
+    $ gem install balancir
 
 ## Usage
 

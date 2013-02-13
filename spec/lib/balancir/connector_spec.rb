@@ -1,8 +1,8 @@
 require 'spec_helper'
 require 'realweb'
-require 'unnamed/connector'
+require 'balancir/connector'
 
-describe Unnamed::Connector do
+describe Balancir::Connector do
   # before :all do
   #   fake_server = File.expand_path('./spec/support/fake_working_service.ru')
   #   @server = RealWeb.start_server_in_thread(fake_server)

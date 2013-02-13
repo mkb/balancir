@@ -1,4 +1,4 @@
-module Unnamed
+module Balancir
   # Accepts requests and distributes them between connectors.
   class Distributor
 

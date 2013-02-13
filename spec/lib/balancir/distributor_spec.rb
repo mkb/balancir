@@ -1,15 +1,15 @@
 require 'spec_helper'
-require 'unnamed/distributor'
-require 'unnamed/connector'
+require 'balancir/distributor'
+require 'balancir/connector'
 
-describe Unnamed::Distributor do
+describe Balancir::Distributor do
   SOME_PATH = '/stuff/and/things'
   ERROR_STATUSES = (500..511).to_a + [598, 599]
 
   context 'with a single connector' do
     before do
-      @connector = Unnamed::Connector.new
-      @distributor = Unnamed::Distributor.new
+      @connector = Balancir::Connector.new
+      @distributor = Balancir::Distributor.new
       @distributor.add_connector(@connector, 100)
       @response = double(:status => 200)
     end
@@ -53,7 +53,7 @@ describe Unnamed::Distributor do
   end
 
   pending 'with a single, failed connector' do
-    it 'raises Unnamed::NoConnectorsAvailable when called'
+    it 'raises Balancir::NoConnectorsAvailable when called'
     it 'tests the failed connector'
     it 'reenables the failed connecor when it comes back'
   end
