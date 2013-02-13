@@ -3,18 +3,17 @@ require 'balancir/distributor'
 require 'balancir/connector'
 
 describe Balancir::Distributor do
-  SOME_PATH = '/stuff/and/things'
   ERROR_STATUSES = (500..511).to_a + [598, 599]
 
   before do
-    @connector = Balancir::Connector.new
+    @connector = Balancir::Connector.new('https://whatever.net')
     @distributor = Balancir::Distributor.new
     @response = double(:status => 200)
   end
 
   context 'with a single connector' do
     before do
-      @connector = Balancir::Connector.new
+      @connector = Balancir::Connector.new('https://nothing.nl')
       @distributor = Balancir::Distributor.new
       @distributor.add_connector(@connector, 100)
       @response = double(:status => 200)
@@ -74,8 +73,8 @@ describe Balancir::Distributor do
 
   context 'with two well-behaved connectors' do
     before do
-      @connector_a = Balancir::Connector.new
-      @connector_b = Balancir::Connector.new
+      @connector_a = Balancir::Connector.new('https://first-cluster.mycompany.com')
+      @connector_b = Balancir::Connector.new('https://second-cluster.mycompany.com')
       @distributor.add_connector(@connector_a, 50)
       @distributor.add_connector(@connector_b, 50)
     end
