@@ -17,7 +17,7 @@ describe Balancir::Connector do
   describe '#get' do
     context 'with a valid http lib response' do
       before do
-        @connector = Balancir::Connector.new("http://127.0.01:#{@server.port}")
+        @connector = Balancir::Connector.new("http://127.0.0.1:#{@server.port}")
         @response = @connector.get(SOME_PATH)
       end
 
