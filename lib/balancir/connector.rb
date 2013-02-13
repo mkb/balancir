@@ -1,4 +1,4 @@
-module Unnamed
+module Balancir
   # Represents a connection to a particular server
   class Connector
     attr_accessor :connection, :random, :recent_errors

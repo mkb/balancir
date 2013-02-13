@@ -11,7 +11,7 @@ Gem::Specification.new do |gem|
   gem.description   = %q{A client side HTTP load balancer.}
   gem.summary       = %q{Allocate load between multiple instances of an HTTP service. } +
       %q{Remove non-functioning servers from rotation and add them back when they become available.}
-  gem.homepage      = ""
+  gem.homepage      = "https://github.com/mkb/balancir"
 
   gem.files         = `git ls-files`.split($/)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
