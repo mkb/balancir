@@ -6,4 +6,8 @@ group :development do
   gem 'growl', :require => RUBY_PLATFORM.include?('darwin') && 'growl'
   gem 'pry'
   gem 'pry-debugger'
+  gem 'guard'
+  gem 'guard-rspec'
+  gem 'travis-lint'
+  gem 'awesome_print'
 end
