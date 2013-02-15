@@ -9,6 +9,6 @@ rvm:
   - rbx-18mode
   - rbx-19mode
 script: bundle exec rspec
-bundler_args: --without development
+bundler_args: --without localdev
 notifications:
   irc: "irc.freenode.org#balancir"
