@@ -27,6 +27,4 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency('sinatra')
   gem.add_development_dependency('realweb')
   gem.add_development_dependency('awesome_print')
-  gem.add_development_dependency('pry')
-  gem.add_development_dependency('pry-debugger')
 end
