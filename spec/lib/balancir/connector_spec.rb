@@ -5,25 +5,48 @@ require 'balancir/connector'
 describe Balancir::Connector do
   FIRST_HOST = "http://bbc.com"
 
-  before :all do
-    fake_server = File.expand_path('./spec/support/fake_working_service.ru')
-    if RUBY_PLATFORM == "java"
-      @server = RealWeb.start_server_in_thread(fake_server)
-    else
-      @server = RealWeb.start_server(fake_server)
+  def ensure_service_running(service_name)
+    @services ||= {}
+    unless @services[service_name] and @services[service_name].running?
+      full_path = File.expand_path("./spec/support/#{service_name}.ru")
+      if RUBY_PLATFORM == 'java'
+        @services[service_name] = RealWeb.start_server_in_thread(full_path)
+      else
+        @services[service_name] = RealWeb.start_server(full_path)
+      end
     end
 
-    @server.should_not be_nil
+    @services[service_name].should be_running
+  end
+
+  def ensure_all_services_stopped
+    @services.values.each do |service|
+      begin
+        service.stop
+      rescue => e
+        warn "Exception while stopping service:"
+        ap e.backtrace
+      end
+    end
+  end
+
+  def connector_for_service(service_name)
+    @services.should have_key(service_name)
+    Balancir::Connector.new("http://127.0.0.1:#{@services[service_name].port}")
+  end
+
+  before :all do
+    ensure_service_running(:fake_service)
   end
 
   after :all do
-    @server.stop
+    ensure_all_services_stopped
   end
 
   describe '#get' do
-    context 'with a valid http lib response' do
+    context 'with a working server' do
       before do
-        @connector = Balancir::Connector.new("http://127.0.0.1:#{@server.port}")
+        @connector = connector_for_service(:fake_service)
         @response = @connector.get(SOME_PATH)
       end
 
@@ -57,6 +80,40 @@ describe Balancir::Connector do
     end
   end
 
-  pending 'error recording'
+  describe '#record_error' do
+    before :each do
+      @connector = connector_for_service(:fake_service)
+    end
+
+    it 'counts one error for each time called' do
+      5.times do |index|
+        @connector.get(SOME_PATH)
+        @connector.record_error
+        @connector.error_count.should eq(index+1)
+      end
+    end
+
+    it 'knows how many requests were made' do
+      5.times do |index|
+        @connector.get(SOME_PATH)
+        @connector.request_count.should eq(index+1)
+      end
+    end
+
+    it 'knows what percentage of calls failed' do
+      @connector.get(SOME_PATH)
+      @connector.record_error
+      @connector.error_rate.should eq(1)
+      @connector.get(SOME_PATH)
+      @connector.error_rate.should eq(0.5)
+      @connector.get(SOME_PATH)
+      @connector.error_rate.should be_within(0.01).of(0.33)
+    end
+
+    it 'does not drop call records before they expire'
+    it 'does not drop failure records before they expire'
+    it 'drops only expired call records'
+    it 'drops only expired failure records'
+  end
   # need to support HMAC
 end

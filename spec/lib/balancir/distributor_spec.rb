@@ -33,7 +33,7 @@ describe Balancir::Distributor do
     describe 'error detection' do
       it 'counts 500s as errors' do
         ERROR_STATUSES.each do |status|
-          @connector.clear_errors
+          @connector.clear
           response = double(:status => status)
           @connector.stub(:get).and_return(response)
           @distributor.get(SOME_PATH)
