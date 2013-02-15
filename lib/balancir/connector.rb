@@ -11,8 +11,12 @@ module Balancir
     end
 
     def get(path)
+      response = Response.new()
       raw_response = @connection.request(:method => "GET", :path => 'ok')
-      response = Response.new(raw_response)
+      response.parse(raw_response)
+      response
+    rescue Excon::Errors::Error => e
+      response.exception = e
     end
 
     def clear_errors

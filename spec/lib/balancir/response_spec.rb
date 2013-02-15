@@ -8,7 +8,8 @@ describe Balancir::Response do
    "Server"=>"WEBrick/1.3.1 (Ruby/1.9.3/2012-11-10)",
    "Date"=>"Fri, 15 Feb 2013 04:20:31 GMT",
    "Connection"=>"Keep-Alive"}, :body => %q|{"tacos":{"cheese":"cheddar"}}}|, :status => 200)
-    @response = Balancir::Response.new(raw_response)
+    @response = Balancir::Response.new
+    @response.parse(raw_response)
   end
 
   it 'sets headers' do
