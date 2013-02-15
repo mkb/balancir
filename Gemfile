@@ -9,5 +9,4 @@ group :localdev do
   gem 'guard'
   gem 'guard-rspec'
   gem 'travis-lint'
-  gem 'awesome_print'
 end
