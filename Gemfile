@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 gemspec
 
-group :localdev do
+group :development do
   gem 'rb-fsevent', :require => RUBY_PLATFORM.include?('darwin') && 'rb-fsevent'
   gem 'growl', :require => RUBY_PLATFORM.include?('darwin') && 'growl'
   gem 'pry'
