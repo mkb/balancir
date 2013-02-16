@@ -124,12 +124,16 @@ describe Balancir::Connector do
 
     context 'with 5 errors over 50 seconds' do
       before do
-        Timecop.freeze
+        Timecop.freeze # Oh, global state...
         5.times do
           @connector.get(SOME_PATH)
           @connector.record_error
           creep_clock_forward_seconds(10)
         end
+      end
+
+      after do
+        Timecop.return
       end
 
       it 'does not drop call records before they expire' do
