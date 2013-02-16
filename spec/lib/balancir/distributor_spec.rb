@@ -6,14 +6,14 @@ describe Balancir::Distributor do
   ERROR_STATUSES = (500..511).to_a + [598, 599]
 
   before do
-    @connector = Balancir::Connector.new('https://whatever.net')
+    @connector = Balancir::Connector.new(CONNECTOR_CONFIG)
     @distributor = Balancir::Distributor.new
     @response = double(:status => 200)
   end
 
   context 'with a single connector' do
     before do
-      @connector = Balancir::Connector.new('https://nothing.nl')
+      @connector = Balancir::Connector.new(CONNECTOR_CONFIG)
       @distributor = Balancir::Distributor.new
       @distributor.add_connector(@connector, 100)
       @response = double(:status => 200)
@@ -73,8 +73,10 @@ describe Balancir::Distributor do
 
   context 'with two well-behaved connectors' do
     before do
-      @connector_a = Balancir::Connector.new('https://first-cluster.mycompany.com')
-      @connector_b = Balancir::Connector.new('https://second-cluster.mycompany.com')
+      @connector_a = Balancir::Connector.new(:url => 'https://first-cluster.mycompany.com',
+          :error_window_seconds => 60)
+      @connector_b = Balancir::Connector.new(:url =>'https://second-cluster.mycompany.com',
+          :error_window_seconds => 60)
       @distributor.add_connector(@connector_a, 50)
       @distributor.add_connector(@connector_b, 50)
     end
