@@ -8,7 +8,7 @@ module Balancir
 
     def initialize(opts)
       @connection = Excon.new(opts.fetch(:url))
-      @error_window_seconds = opts.fetch(:error_window_seconds)
+      @failure_ratio = opts.fetch(:failure_ratio)
       clear
     end
 
@@ -49,16 +49,10 @@ module Balancir
 
     def clear_expired_tallies
       [@recent_requests, @recent_errors].each do |tally|
-        while expired?(tally.first)
-          tally.shift
-        end
+        # while expired?(tally.first)
+        #   tally.shift
+        # end
       end
-    end
-
-    private
-
-    def expired?(item)
-      item and item < (Time.now - @error_window_seconds)
     end
   end
 end

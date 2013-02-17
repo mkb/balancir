@@ -3,8 +3,6 @@ require 'balancir/distributor'
 require 'balancir/connector'
 
 describe Balancir::Distributor do
-  ERROR_STATUSES = (500..511).to_a + [598, 599]
-
   before do
     @connector = Balancir::Connector.new(CONNECTOR_CONFIG)
     @distributor = Balancir::Distributor.new
@@ -29,32 +27,6 @@ describe Balancir::Distributor do
       it 'passes on calls to #put'
       it 'passes on calls to #delete'
     end
-
-    describe 'error detection' do
-      it 'counts 500s as errors' do
-        ERROR_STATUSES.each do |status|
-          @connector.clear
-          response = double(:status => status)
-          @connector.stub(:get).and_return(response)
-          @distributor.get(SOME_PATH)
-          @connector.recent_errors.count.should eq 1
-        end
-      end
-
-      pending "more error detection" do
-        it 'does not count 404 or 410 as errors'
-        it 'counts other 400s as errors'
-        it 'counts 700s as errors'
-
-        it 'counts Errno::ECONNRESET as an error'
-        it 'counts Errno::ETIMEDOUT as an error'
-        it 'counts Errno::ECONNREFUSED as an error'
-        it 'counts Errno::EHOSTUNREACH as an error'
-        it 'counts Errno::EAFNOSUPPORT as an error'
-
-        it "disables after enough errors"
-      end
-    end
   end
 
   describe 'with a single, failed connector' do
@@ -74,9 +46,9 @@ describe Balancir::Distributor do
   context 'with two well-behaved connectors' do
     before do
       @connector_a = Balancir::Connector.new(:url => 'https://first-cluster.mycompany.com',
-          :error_window_seconds => 60)
+                                             :failure_ratio => [5,10])
       @connector_b = Balancir::Connector.new(:url =>'https://second-cluster.mycompany.com',
-          :error_window_seconds => 60)
+                                             :failure_ratio => [5,10])
       @distributor.add_connector(@connector_a, 50)
       @distributor.add_connector(@connector_b, 50)
     end

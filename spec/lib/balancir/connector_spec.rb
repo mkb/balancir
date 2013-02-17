@@ -2,7 +2,6 @@ require 'spec_helper'
 require 'balancir/connector'
 
 require 'realweb'
-require 'timecop'
 
 
 describe Balancir::Connector do
@@ -36,7 +35,7 @@ describe Balancir::Connector do
   def connector_for_service(service_name)
     @services.should have_key(service_name)
     Balancir::Connector.new(:url  => "http://127.0.0.1:#{@services[service_name].port}",
-                            :error_window_seconds => 60)
+                            :failure_ratio => [5,5])
   end
 
   def creep_clock_forward_seconds(seconds)
@@ -116,44 +115,6 @@ describe Balancir::Connector do
       @connector.error_rate.should eq(0.5)
       @connector.get(SOME_PATH)
       @connector.error_rate.should be_within(0.01).of(0.33)
-    end
-
-    def m_errors_over_m_seconds(error_quantity, interval)
-
-    end
-
-    context 'with 5 errors over 50 seconds' do
-      before do
-        Timecop.freeze # Oh, global state...
-        5.times do
-          @connector.get(SOME_PATH)
-          @connector.record_error
-          creep_clock_forward_seconds(10)
-        end
-      end
-
-      after do
-        Timecop.return
-      end
-
-      it 'does not drop call records before they expire' do
-        @connector.request_count.should eq(5)
-      end
-
-      it 'does not drop failure records before they expire' do
-        @connector.error_count.should eq(5)
-      end
-
-      it 'drops only expired call records' do
-        creep_clock_forward_seconds(35)
-        @connector.request_count.should eq(2)
-      end
-
-      it 'drops only expired failure records' do
-        creep_clock_forward_seconds(35)
-        @connector.error_count.should eq(2)
-      end
-
     end
   end
   # need to support HMAC

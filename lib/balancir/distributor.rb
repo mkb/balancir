@@ -17,9 +17,6 @@ module Balancir
       raise NoConnectorsAvailable if @active_connectors.empty?
 
       response = @active_connectors.first.get(path)
-      if (500..599).include? response.status
-        @active_connectors.first.record_error
-      end
     end
   end
 end
