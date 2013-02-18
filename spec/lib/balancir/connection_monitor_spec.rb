@@ -62,9 +62,32 @@ describe Balancir::ConnectionMonitor do
 
   # Can we probe that timer events won't pile up if polling is low?
 
-  pending '#poll' do
-    it 'tries each connection'
-    it 'records success or failutre'
+  describe '#poll' do
+    before do
+      @monitor = Balancir::ConnectionMonitor.new(MONITOR_CONFIG)
+      @connector_a = Balancir::Connector.new(:url => 'https://first-cluster.mycompany.com',
+                                             :failure_ratio => [5,10])
+      @connector_b = Balancir::Connector.new(:url =>'https://second-cluster.mycompany.com',
+                                             :failure_ratio => [5,10])
+      @monitor.add_connector(@connector_a)
+      @monitor.add_connector(@connector_b)
+    end
+
+    it 'tries each connection' do
+      @connector_a.should_receive(:get).with(PING_PATH)
+      @connector_b.should_receive(:get).with(PING_PATH)
+      @monitor.fire
+    end
+
+    pending 'does not notify the distrubutor before the revive threshold is reached' do
+      @connector_a.stub(:get).with(PING_PATH).and_return(successful_response)
+      @connector_b.stub(:get).with(PING_PATH).and_return(failed_response)
+    end
+
+    pending 'notifies the distributor when a connection comes back to life' do
+      @connector_a.stub(:get).with(PING_PATH).and_return(successful_response)
+      @connector_b.stub(:get).with(PING_PATH).and_return(failed_response)
+    end
   end
 end
 

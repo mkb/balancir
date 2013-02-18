@@ -25,6 +25,9 @@ module Balancir
     end
 
     def poll
+      @connectors.each do |c|
+        c.get(@ping_path)
+      end
     end
   end
 end

@@ -4,19 +4,6 @@ require 'balancir/response'
 describe Balancir::Response do
   ERROR_STATUSES = (500..511).to_a + [598, 599]
 
-  RESPONSE_FIELDS = {:headers => {"Content-Type"=>"application/json",
-                                  "Content-Length"=>"31",
-                                  "Server"=>"WEBrick/1.3.1 (Ruby/1.9.3/2012-11-10)",
-                                  "Date"=>"Fri, 15 Feb 2013 04:20:31 GMT",
-                                  "Connection"=>"Keep-Alive"}, :body => %q|{"tacos":{"cheese":"cheddar"}}}|, :status => 200}
-
-  def successful_response
-    raw_response = stub(RESPONSE_FIELDS)
-    response = Balancir::Response.new
-    response.parse(raw_response)
-    response
-  end
-
   describe 'basic response parsing' do
     before do
       @response = successful_response
