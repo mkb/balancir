@@ -4,7 +4,7 @@ require 'logger'
 FileUtils.mkdir_p('log')
 log = Logger.new('log/fake_service.log')
 
-SOME_JSON = %Q|{"tacos":{"cheese":"cheddassssssssssr"}}}|
+SOME_JSON = %Q|{"tacos":{"cheese":"cheddar"}}}|
 get '/ok' do
   log.debug('/ok')
   [200, { 'Content-Type' => 'application/json' }, [SOME_JSON]]
