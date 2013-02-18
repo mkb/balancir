@@ -54,7 +54,7 @@ describe Balancir::Connector do
     context 'with a working server' do
       before do
         @connector = connector_for_service(:fake_service)
-        @response = @connector.get(SOME_PATH)
+        @response = @connector.get(OK_PATH)
       end
 
       it 'returns a response object' do
@@ -87,33 +87,31 @@ describe Balancir::Connector do
     end
   end
 
-  describe '#record_error' do
+  describe 'failure detection' do
     before :each do
       @connector = connector_for_service(:fake_service)
     end
 
     it 'counts one error for each time called' do
       5.times do |index|
-        @connector.get(SOME_PATH)
-        @connector.record_error
+        @connector.get(BARF_PATH)
         @connector.error_count.should eq(index+1)
       end
     end
 
     it 'knows how many requests were made' do
       5.times do |index|
-        @connector.get(SOME_PATH)
+        response = @connector.get(BARF_PATH)
         @connector.request_count.should eq(index+1)
       end
     end
 
     it 'knows what percentage of calls failed' do
-      @connector.get(SOME_PATH)
-      @connector.record_error
+      @connector.get(BARF_PATH)
       @connector.error_rate.should eq(1)
-      @connector.get(SOME_PATH)
+      @connector.get(OK_PATH)
       @connector.error_rate.should eq(0.5)
-      @connector.get(SOME_PATH)
+      @connector.get(OK_PATH)
       @connector.error_rate.should be_within(0.01).of(0.33)
     end
   end

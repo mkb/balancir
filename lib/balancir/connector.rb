@@ -14,14 +14,13 @@ module Balancir
 
     def get(path)
       response = Response.new()
-      recent_requests << Time.now
-      raw_response = @connection.request(:method => "GET", :path => 'ok')
+      raw_response = @connection.request(:method => "GET", :path => path)
       response.parse(raw_response)
       response
     rescue Excon::Errors::Error => e
       response.exception = e
     ensure
-      response
+      tally(response)
     end
 
     def clear
@@ -29,22 +28,22 @@ module Balancir
       @recent_requests = []
     end
 
+    def tally(response)
+      @recent_requests << response.error?
+    end
+
     def request_count
       clear_expired_tallies
       @recent_requests.count
     end
 
-    def record_error
-      @recent_errors << Time.now
-    end
-
     def error_count
       clear_expired_tallies
-      @recent_errors.count
+      @recent_requests.count(true)
     end
 
     def error_rate
-      @recent_errors.count.to_f / @recent_requests.count
+      error_count.to_f / request_count
     end
 
     def clear_expired_tallies

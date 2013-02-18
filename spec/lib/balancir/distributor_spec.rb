@@ -23,9 +23,11 @@ describe Balancir::Distributor do
         @distributor.get(SOME_PATH)
       end
 
-      it 'passes on calls to #post'
-      it 'passes on calls to #put'
-      it 'passes on calls to #delete'
+      pending "other http methods" do
+        it 'passes on calls to #post'
+        it 'passes on calls to #put'
+        it 'passes on calls to #delete'
+      end
     end
   end
 
