@@ -13,5 +13,9 @@ module Balancir
       return true if (500..599).include?(status)
       return false
     end
+
+    def successful?
+      !error?
+    end
   end
 end

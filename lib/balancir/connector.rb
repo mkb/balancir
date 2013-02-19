@@ -19,6 +19,7 @@ module Balancir
       response
     rescue Excon::Errors::Error => e
       response.exception = e
+      response
     ensure
       tally(response)
     end

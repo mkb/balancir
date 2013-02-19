@@ -81,6 +81,9 @@ describe Balancir::Connector do
 
       it 'returns a response with an exception' do
         @response = @connector.get(SOME_PATH)
+        @response.should respond_to(:status)
+        @response.should respond_to(:headers)
+        @response.should respond_to(:body)
         @response.exception.should_not be_nil
         @response.exception.should be_a_kind_of(Excon::Errors::Error)
       end
