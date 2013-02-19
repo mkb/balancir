@@ -1,6 +1,10 @@
 $: << './lib'
 require 'awesome_print'
-require 'pry'
+begin
+  require 'pry'
+rescue LoadError
+  # Alas.
+end
 
 SOME_PATH = '/stuff/and/things'
 OK_PATH = '/ok'
