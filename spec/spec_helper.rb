@@ -1,5 +1,6 @@
 $: << './lib'
 require 'awesome_print'
+require 'pry'
 
 SOME_PATH = '/stuff/and/things'
 OK_PATH = '/ok'
