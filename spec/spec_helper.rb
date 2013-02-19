@@ -19,17 +19,17 @@ RESPONSE_FIELDS = {:headers => {"Content-Type"=>"application/json",
                                 "Date"=>"Fri, 15 Feb 2013 04:20:31 GMT",
                                 "Connection"=>"Keep-Alive"}, :body => %q|{"tacos":{"cheese":"cheddar"}}}|, :status => 200}
 
-def successful_response
-  raw_response = stub(RESPONSE_FIELDS)
-  response = Balancir::Response.new
-  response.parse(raw_response)
-  response
+module ResponseUtils
+  def successful_response
+    raw_response = stub(RESPONSE_FIELDS)
+    response = Balancir::Response.new
+    response.parse(raw_response)
+    response
+  end
+
+  def failed_response
+    response = Balancir::Response.new
+    response.exception = StandardError.new
+    response
+  end
 end
-
-def failed_response
-  response = Balancir::Response.new
-  response.exception = StandardError.new
-  response
-end
-
-

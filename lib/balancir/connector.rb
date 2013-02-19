@@ -2,9 +2,11 @@ require 'excon'
 require 'balancir/response'
 
 module Balancir
-  # Represents a connection to a particular server
+  # Represents a connection to a particular server, encapsulating the
+  # underlying HTTP library.
   class Connector
-    attr_accessor :connection, :random, :recent_errors, :recent_requests
+    attr_accessor :connection, :random, :recent_errors, :recent_requests,
+      :failure_ratio
 
     def initialize(opts)
       @connection = Excon.new(opts.fetch(:url))
@@ -31,28 +33,21 @@ module Balancir
 
     def tally(response)
       @recent_requests << response.error?
+      while @recent_requests.length > @failure_ratio.last
+        @recent_requests.shift
+      end
     end
 
     def request_count
-      clear_expired_tallies
       @recent_requests.count
     end
 
     def error_count
-      clear_expired_tallies
       @recent_requests.count(true)
     end
 
     def error_rate
       error_count.to_f / request_count
-    end
-
-    def clear_expired_tallies
-      [@recent_requests, @recent_errors].each do |tally|
-        # while expired?(tally.first)
-        #   tally.shift
-        # end
-      end
     end
   end
 end

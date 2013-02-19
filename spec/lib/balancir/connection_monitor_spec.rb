@@ -4,6 +4,7 @@ require 'balancir/connector'
 require 'balancir/distributor'
 
 describe Balancir::ConnectionMonitor do
+  include ResponseUtils
   MONITOR_CONFIG = { :polling_interval_seconds => 5,
                      :ping_path => "/ping",
                      :revive_threshold => [10,10] }
@@ -108,7 +109,7 @@ describe Balancir::ConnectionMonitor do
 
       it 'returns false with enough successes but not enough in a row' do
         responses = [successful_response, successful_response, successful_response,
-            failed_response, failed_response]
+                     failed_response, failed_response]
         responses.cycle(4) do |r|
           @monitor.tally_response(@connector, r)
           @monitor.revive_threshold_met?(@connector).should be_false
@@ -117,7 +118,7 @@ describe Balancir::ConnectionMonitor do
 
       it 'returns true when the successes proportion is actually met' do
         responses = [successful_response, successful_response, successful_response,
-            failed_response]
+                     failed_response]
         responses.cycle(3) do |r|
           @monitor.tally_response(@connector, r)
         end
