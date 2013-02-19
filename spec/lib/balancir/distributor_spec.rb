@@ -3,17 +3,15 @@ require 'balancir/distributor'
 require 'balancir/connector'
 
 describe Balancir::Distributor do
-  ERROR_STATUSES = (500..511).to_a + [598, 599]
-
   before do
-    @connector = Balancir::Connector.new('https://whatever.net')
+    @connector = Balancir::Connector.new(CONNECTOR_CONFIG)
     @distributor = Balancir::Distributor.new
     @response = double(:status => 200)
   end
 
   context 'with a single connector' do
     before do
-      @connector = Balancir::Connector.new('https://nothing.nl')
+      @connector = Balancir::Connector.new(CONNECTOR_CONFIG)
       @distributor = Balancir::Distributor.new
       @distributor.add_connector(@connector, 100)
       @response = double(:status => 200)
@@ -25,34 +23,10 @@ describe Balancir::Distributor do
         @distributor.get(SOME_PATH)
       end
 
-      it 'passes on calls to #post'
-      it 'passes on calls to #put'
-      it 'passes on calls to #delete'
-    end
-
-    describe 'error detection' do
-      it 'counts 500s as errors' do
-        ERROR_STATUSES.each do |status|
-          @connector.clear_errors
-          response = double(:status => status)
-          @connector.stub(:get).and_return(response)
-          @distributor.get(SOME_PATH)
-          @connector.recent_errors.count.should eq 1
-        end
-      end
-
-      pending "more error detection" do
-        it 'does not count 404 or 410 as errors'
-        it 'counts other 400s as errors'
-        it 'counts 700s as errors'
-
-        it 'counts Errno::ECONNRESET as an error'
-        it 'counts Errno::ETIMEDOUT as an error'
-        it 'counts Errno::ECONNREFUSED as an error'
-        it 'counts Errno::EHOSTUNREACH as an error'
-        it 'counts Errno::EAFNOSUPPORT as an error'
-
-        it "disables after enough errors"
+      pending "other http methods" do
+        it 'passes on calls to #post'
+        it 'passes on calls to #put'
+        it 'passes on calls to #delete'
       end
     end
   end
@@ -73,8 +47,10 @@ describe Balancir::Distributor do
 
   context 'with two well-behaved connectors' do
     before do
-      @connector_a = Balancir::Connector.new('https://first-cluster.mycompany.com')
-      @connector_b = Balancir::Connector.new('https://second-cluster.mycompany.com')
+      @connector_a = Balancir::Connector.new(:url => 'https://first-cluster.mycompany.com',
+                                             :failure_ratio => [5,10])
+      @connector_b = Balancir::Connector.new(:url =>'https://second-cluster.mycompany.com',
+                                             :failure_ratio => [5,10])
       @distributor.add_connector(@connector_a, 50)
       @distributor.add_connector(@connector_b, 50)
     end

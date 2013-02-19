@@ -1,6 +1,7 @@
 # Balancir
 
-Balancir is a client-side HTTP load balancer. It's still in the early phases of development so don't bother using it just yet.
+Balancir is a client-side HTTP load balancer. It's still in the early phases
+of development so don't bother using it just yet.
 
 [![Code Climate](https://codeclimate.com/github/mkb/balancir.png)](https://codeclimate.com/github/mkb/balancir)
 [![Build Status](https://travis-ci.org/mkb/balancir.png?branch=master)](https://travis-ci.org/mkb/balancir)
@@ -22,7 +23,7 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Come up with a name.
+Don't use it yet.
 
 ## Running the tests
 
