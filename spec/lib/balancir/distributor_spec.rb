@@ -97,5 +97,10 @@ describe Balancir::Distributor do
     end
   end
 
+  # what if one particular call fails while others are OK?
+  # how to manually set a connection to up or down?
+  # how to customize failure logic
+  # how to prevent or stop flapping?
+  # idempotent
   # what about notifications?
 end

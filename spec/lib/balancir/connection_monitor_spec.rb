@@ -126,7 +126,7 @@ describe Balancir::ConnectionMonitor do
     end
   end
 
-  pending '#poll' do
+  describe '#poll' do
     before do
       @connector_a = Balancir::Connector.new(:url => 'https://first-cluster.mycompany.com',
                                              :failure_ratio => [5,10])
@@ -157,10 +157,12 @@ describe Balancir::ConnectionMonitor do
       end
 
       it 'notifies the distributor when a connection comes back to life' do
+        @distributor.active_connectors.should be_empty
         10.times do
           @monitor.fire
         end
-        @distributor.should_receive(:add_connector).with(@connector_a)
+        @distributor.active_connectors.should have(1).item
+        @distributor.active_connectors.should include(@connector_a)
       end
     end
   end

@@ -26,7 +26,7 @@ module Balancir
     end
 
     def poll
-      @responses.keys do |c|
+      @responses.keys.each do |c|
         response = c.get(@ping_path)
         tally_response(c, response)
         if revive_threshold_met?(c)
