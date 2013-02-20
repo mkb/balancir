@@ -133,5 +133,20 @@ describe Balancir::Connector do
     end
   end
 
-  pending '#failed?'
+  describe '#failed?' do
+    before :each do
+      @connector = connector_for_service(:fake_service)
+      @connector.get(OK_PATH)
+      4.times { @connector.get(BARF_PATH) }
+    end
+
+    it 'indicates not failed before threshold is met' do
+      @connector.should_not be_failed
+    end
+
+    it 'indicates failed once threshold is met' do
+      @connector.get(BARF_PATH)
+      @connector.should be_failed
+    end
+  end
 end
