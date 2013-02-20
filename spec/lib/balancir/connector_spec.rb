@@ -81,13 +81,16 @@ describe Balancir::Connector do
 
       it 'returns a response with an exception' do
         @response = @connector.get(SOME_PATH)
+        @response.should respond_to(:status)
+        @response.should respond_to(:headers)
+        @response.should respond_to(:body)
         @response.exception.should_not be_nil
         @response.exception.should be_a_kind_of(Excon::Errors::Error)
       end
     end
   end
 
-  describe 'failure detection' do
+  describe 'request and error counting' do
     before :each do
       @connector = connector_for_service(:fake_service)
     end
@@ -114,6 +117,14 @@ describe Balancir::Connector do
       @connector.get(OK_PATH)
       @connector.error_rate.should be_within(0.01).of(0.33)
     end
+
+    it 'tracks only enough requests to calculate failure ratio' do
+      20.times do
+        @connector.get(OK_PATH)
+      end
+      @connector.request_count.should <= @connector.failure_ratio.last
+    end
   end
-  # need to support HMAC
+
+  pending '#failed?'
 end

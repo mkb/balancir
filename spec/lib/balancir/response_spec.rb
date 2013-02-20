@@ -2,6 +2,7 @@ require 'spec_helper'
 require 'balancir/response'
 
 describe Balancir::Response do
+  include ResponseUtils
   ERROR_STATUSES = (500..511).to_a + [598, 599]
 
   describe 'basic response parsing' do

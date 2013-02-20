@@ -96,6 +96,4 @@ describe Balancir::Distributor do
       end
     end
   end
-
-  # what about notifications?
 end

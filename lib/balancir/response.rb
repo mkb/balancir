@@ -1,4 +1,5 @@
 module Balancir
+  # Represents a response from an HTTP call.
   class Response
     attr_accessor :body, :status, :headers, :exception
 
@@ -12,6 +13,10 @@ module Balancir
       return true if @exception
       return true if (500..599).include?(status)
       return false
+    end
+
+    def successful?
+      !error?
     end
   end
 end
