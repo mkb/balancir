@@ -89,6 +89,13 @@ describe Balancir::Distributor do
         @distributor.get(SOME_PATH)
       end
     end
+    
+    describe 'distribute load' do
+      it 'determines the percentage of load distribution for each the connectors' do
+        numbers = 10.times.map{ rand(100) }
+        @connector
+      end     
+    end
   end
 
   pending 'with two connectors, one well-behaved, one not' do

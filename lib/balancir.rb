@@ -1,4 +1,4 @@
-require "unnamed/version"
+require "balancir/version"
 
-module Unnamed
+module Balancir
 end
