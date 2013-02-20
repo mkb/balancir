@@ -56,7 +56,6 @@ describe Balancir::Distributor do
     end
 
     it 'distributes calls between them' do
-      pending
       @connector_a.should_receive(:get).twice.and_return(@response)
       @connector_b.should_receive(:get).twice.and_return(@response)
 
@@ -75,7 +74,6 @@ describe Balancir::Distributor do
 
   describe 'with two connectors, one well-behaved, one not' do
     it 'tolerates occasional errors'
-    it 'disables a failing connector'
     it 're-enables a failed connector which resumes working'
     
     before do
@@ -94,6 +92,11 @@ describe Balancir::Distributor do
       4.times do
         @distributor.get(SOME_PATH)
       end
+    end
+
+    it 'disables a failing connector' do
+      pending
+      @connector_b.failure_ratio = [10, 10]
     end
   end
 end

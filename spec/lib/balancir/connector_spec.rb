@@ -124,6 +124,13 @@ describe Balancir::Connector do
       end
       @connector.request_count.should <= @connector.failure_ratio.last
     end
+
+    it 'knows when its unhealthy' do
+      @distributor = Balancir::Distributor.new
+      @distributor.fault_tolerance = 0.5
+      @connector.failure_ratio = [10, 10]
+      @connector.healthy?(@distributor).should be_false
+    end
   end
 
   pending '#failed?'

@@ -49,5 +49,22 @@ module Balancir
     def error_rate
       error_count.to_f / request_count
     end
+
+    def clear_expired_tallies
+      [@recent_requests, @recent_errors].each do |tally|
+        # while expired?(tally.first)
+        #   tally.shift
+        # end
+      end
+    end
+
+    def healthy?(distributor)
+      # returns true if the connector has failed
+      if (self.failure_ratio[0] / self.failure_ratio[1]) > distributor.fault_tolerance
+        return true
+      else
+        return false
+      end
+    end
   end
 end

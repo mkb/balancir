@@ -3,7 +3,7 @@ module Balancir
   class Distributor
     class NoConnectorsAvailable < StandardError; end
 
-    attr_accessor :failed_connectors, :active_connectors
+    attr_accessor :failed_connectors, :active_connectors, :fault_tolerance
 
     def initialize
       @active_connectors = []
@@ -17,6 +17,10 @@ module Balancir
       raise NoConnectorsAvailable if @active_connectors.empty?
 
       response = @active_connectors.first.get(path)
+      @active_connectors.rotate!
+      response
     end
+
+
   end
 end
