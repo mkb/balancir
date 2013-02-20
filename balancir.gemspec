@@ -18,12 +18,13 @@ Gem::Specification.new do |gem|
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.require_paths = ['lib']
 
+  gem.required_ruby_version     = '>= 1.9.2'
+
   gem.add_dependency('excon')
+  gem.add_dependency('celluloid')
 
   gem.add_development_dependency('rspec')
-  gem.add_development_dependency('guard')
-  gem.add_development_dependency('guard-rspec')
-  gem.add_development_dependency('travis-lint')
   gem.add_development_dependency('sinatra')
   gem.add_development_dependency('realweb')
+  gem.add_development_dependency('awesome_print')
 end
