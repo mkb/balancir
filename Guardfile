@@ -5,4 +5,3 @@ guard 'rspec', :cli => "--color --format nested" do
   watch(%r{^spec/support/*})      { 'spec' }
   watch('spec/spec_helper.rb')    { "spec" }
 end
-
