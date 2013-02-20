@@ -60,7 +60,7 @@ module Balancir
 
     def healthy?(distributor)
       # returns true if the connector has failed
-      if (self.failure_ratio[0] / self.failure_ratio[1]) > distributor.fault_tolerance
+      if (self.failure_ratio[0] / self.failure_ratio[1]) < distributor.fault_tolerance
         return true
       else
         return false
