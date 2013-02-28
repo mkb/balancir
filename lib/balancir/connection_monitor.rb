@@ -30,9 +30,14 @@ module Balancir
         response = c.get(@ping_path)
         tally_response(c, response)
         if revive_threshold_met?(c)
-          @distributor.add_connector(c, 50)
+          reactivate(c)
         end
       end
+    end
+
+    def reactivate(connector)
+      @distributor.add_connector(connector, 50)
+      @responses.delete(connector)
     end
 
     def tally_response(connector, response)

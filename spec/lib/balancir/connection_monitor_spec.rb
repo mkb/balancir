@@ -61,7 +61,7 @@ describe Balancir::ConnectionMonitor do
     end
   end
 
-  # Can we probe that timer events won't pile up if polling is low?
+  # Can we prove that timer events won't pile up if polling is low?
 
   describe '#revive_threshold_met?' do
     before do
@@ -129,9 +129,9 @@ describe Balancir::ConnectionMonitor do
 
   describe '#poll' do
     before do
-      @connector_a = Balancir::Connector.new(:url => 'https://first-cluster.mycompany.com',
+      @connector_a = Balancir::Connector.new(:url => 'https://first-environment.mycompany.com',
                                              :failure_ratio => [5,10])
-      @connector_b = Balancir::Connector.new(:url =>'https://second-cluster.mycompany.com',
+      @connector_b = Balancir::Connector.new(:url =>'https://second-environment.mycompany.com',
                                              :failure_ratio => [5,10])
       @monitor.add_connector(@connector_a)
       @monitor.add_connector(@connector_b)
@@ -149,36 +149,51 @@ describe Balancir::ConnectionMonitor do
         @connector_b.stub(:get).with(PING_PATH).and_return(failed_response)
       end
 
-      it 'does not notify the distrubutor before the revive threshold is reached' do
-        @distributor.should_not_receive(:add_connector)
+      it 'does reactivate the connection before the revive threshold is reached' do
+        @monitor.should_not_receive(:reactivate)
 
         9.times do
           @monitor.fire
         end
       end
 
-      it 'notifies the distributor when a connection comes back to life' do
+      it 'reactivates the connection' do
         @distributor.active_connectors.should be_empty
+        @monitor.wrapped_object.should_receive(:reactivate)
         10.times do
           @monitor.fire
         end
-        @distributor.active_connectors.should have(1).item
-        @distributor.active_connectors.should include(@connector_a)
+      end
+    end
+
+    describe '#reactivate' do
+      before do
+        @connector = Balancir::Connector.new(CONNECTOR_CONFIG)
+        @monitor.add_connector(@connector)
+        @monitor.reactivate(@connector)
+      end
+
+      it 'notifies the distributor' do
+        @distributor.active_connectors.should include(@connector)
+      end
+
+      it 'removes the connection from the monitored list' do
+        @monitor.connectors.should_not include(@connector)
       end
     end
   end
 end
 
-# timer methods:
-[:<,
- :<=,
- :>,
- :>=,
- :between?,
- :call,
- :cancel,
- :fire,
- :interval,
- :recurring,
- :reset,
- :time]
+  # timer methods:
+  [:<,
+   :<=,
+   :>,
+   :>=,
+   :between?,
+   :call,
+   :cancel,
+   :fire,
+   :interval,
+   :recurring,
+   :reset,
+   :time]
