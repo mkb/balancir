@@ -90,6 +90,8 @@ describe Balancir::Connector do
     end
   end
 
+  it 'does not retry idempotent requests'
+
   describe 'request and error counting' do
     before :each do
       @connector = connector_for_service(:fake_service)

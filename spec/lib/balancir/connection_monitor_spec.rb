@@ -53,8 +53,6 @@ describe Balancir::ConnectionMonitor do
     end
   end
 
-  # Can we prove that timer events won't pile up if polling is low?
-
   describe '#revive_threshold_met?' do
     context 'with a string of failures' do
       before do
