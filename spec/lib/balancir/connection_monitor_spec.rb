@@ -12,6 +12,8 @@ describe Balancir::ConnectionMonitor do
   before do
     @distributor = Balancir::Distributor.new
     @monitor = Balancir::ConnectionMonitor.new(@distributor, MONITOR_CONFIG)
+    @connector = Balancir::Connector.new(CONNECTOR_CONFIG)
+    @monitor.add_connector(@connector)
   end
 
   describe '#initialize' do
@@ -29,11 +31,6 @@ describe Balancir::ConnectionMonitor do
   end
 
   describe '#add_connector' do
-    before do
-      @connector = Balancir::Connector.new(CONNECTOR_CONFIG)
-      @monitor.add_connector(@connector)
-    end
-
     it 'records the connection addred' do
       @monitor.connectors.should have(1).item
     end
@@ -44,11 +41,6 @@ describe Balancir::ConnectionMonitor do
   end
 
   describe 'timer' do
-    before do
-      @connector = Balancir::Connector.new(CONNECTOR_CONFIG)
-      @monitor.add_connector(@connector)
-    end
-
     it 'calls #poll when triggered' do
       # Celluloid#wrapped_object lets rspec expectations work with cellulooid proxying
       @monitor.wrapped_object.should_receive(:poll)
@@ -64,11 +56,6 @@ describe Balancir::ConnectionMonitor do
   # Can we prove that timer events won't pile up if polling is low?
 
   describe '#revive_threshold_met?' do
-    before do
-      @connector = Balancir::Connector.new(CONNECTOR_CONFIG)
-      @monitor.add_connector(@connector)
-    end
-
     context 'with a string of failures' do
       before do
         @response = failed_response
@@ -168,8 +155,6 @@ describe Balancir::ConnectionMonitor do
 
     describe '#reactivate' do
       before do
-        @connector = Balancir::Connector.new(CONNECTOR_CONFIG)
-        @monitor.add_connector(@connector)
         @monitor.reactivate(@connector)
       end
 
