@@ -3,11 +3,10 @@
 
 ## Needed for beta
 * finish http error detection
-* finish connector failure detection
-* basic, fixed-ratio distributor
 * support all HTTP methods
 * top-level interface
 * need to support HMAC
+* distributor ratio configurable
 
 ## Later
 * idempotent

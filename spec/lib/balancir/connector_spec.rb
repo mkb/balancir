@@ -90,16 +90,15 @@ describe Balancir::Connector do
     end
   end
 
-  it 'does not retry idempotent requests'
-
   describe 'request and error counting' do
     before :each do
       @connector = connector_for_service(:fake_service)
     end
 
-    it 'counts one error for each time called' do
+    it 'counts one error for each failed invocation' do
       5.times do |index|
-        @connector.get(BARF_PATH)
+        response = @connector.get(BARF_PATH)
+        response.should be_error
         @connector.error_count.should eq(index+1)
       end
     end
