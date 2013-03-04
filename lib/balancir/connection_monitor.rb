@@ -15,13 +15,15 @@ module Balancir
       @responses = {}
     end
 
+    # Start monitoring another connection
     def add_connector(connector)
       raise ArgumentError unless connector.respond_to?(:get)
       @responses[connector] = []
       @timer = every(@polling_interval_seconds) { poll }
     end
 
-    def fire
+    # Fire the timer. (This is here to facilitate testing.)
+    def _fire
       @timer.fire
     end
 

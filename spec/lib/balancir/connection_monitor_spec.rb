@@ -44,12 +44,12 @@ describe Balancir::ConnectionMonitor do
     it 'calls #poll when triggered' do
       # Celluloid#wrapped_object lets rspec expectations work with cellulooid proxying
       @monitor.wrapped_object.should_receive(:poll)
-      @monitor.fire
+      @monitor._fire
     end
 
     it 'repeats' do
       @monitor.timer.recurring.should be_true
-      @monitor.fire
+      @monitor._fire
     end
   end
 
@@ -125,7 +125,7 @@ describe Balancir::ConnectionMonitor do
     it 'tries each connection' do
       @connector_a.should_receive(:get).with(PING_PATH).and_return(successful_response)
       @connector_b.should_receive(:get).with(PING_PATH).and_return(successful_response)
-      @monitor.fire
+      @monitor._fire
     end
 
     context 'with one working connection and one busted' do
@@ -138,7 +138,7 @@ describe Balancir::ConnectionMonitor do
         @monitor.should_not_receive(:reactivate)
 
         9.times do
-          @monitor.fire
+          @monitor._fire
         end
       end
 
@@ -146,7 +146,7 @@ describe Balancir::ConnectionMonitor do
         @distributor.active_connectors.should be_empty
         @monitor.wrapped_object.should_receive(:reactivate)
         10.times do
-          @monitor.fire
+          @monitor._fire
         end
       end
     end
