@@ -56,7 +56,6 @@ describe Balancir::Distributor do
     end
 
     it 'distributes calls between them' do
-      pending
       @connector_a.should_receive(:get).twice.and_return(@response)
       @connector_b.should_receive(:get).twice.and_return(@response)
 
@@ -64,20 +63,19 @@ describe Balancir::Distributor do
         @distributor.get(SOME_PATH)
       end
     end
-    
+
     describe 'distribute load' do
       it 'determines the percentage of load distribution for each the connectors' do
         numbers = 10.times.map{ rand(100) }
         @connector
-      end     
+      end
     end
   end
 
   describe 'with two connectors, one well-behaved, one not' do
     it 'tolerates occasional errors'
-    it 'disables a failing connector'
     it 're-enables a failed connector which resumes working'
-    
+
     before do
       @connector_a = Balancir::Connector.new(:url => 'https://first-cluster.mycompany.com',
                                              :failure_ratio => [5,10])
@@ -86,14 +84,19 @@ describe Balancir::Distributor do
       @distributor.active_connectors = [@connector_a]
       @distributor.failed_connectors = [@connector_b]
     end
-    
+
     it 'distributes all calls to the good connector' do
       @connector_a.should_receive(:get).exactly(4).and_return(@response)
       @connector_b.should_not_receive(:get)
-      
+
       4.times do
         @distributor.get(SOME_PATH)
       end
+    end
+
+    it 'disables a failing connector' do
+      pending
+      @connector_b.failure_ratio = [10, 10]
     end
   end
 end
