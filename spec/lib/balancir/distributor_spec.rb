@@ -40,9 +40,6 @@ describe Balancir::Distributor do
     it 'raises Balancir::NoConnectorsAvailable when called' do
       expect { @distributor.get(SOME_PATH) }.to raise_error(Balancir::Distributor::NoConnectorsAvailable)
     end
-
-    it 'tests the failed connector'
-    it 'reenables the failed connecor when it comes back'
   end
 
   context 'with two well-behaved connectors' do
@@ -74,7 +71,6 @@ describe Balancir::Distributor do
 
   describe 'with two connectors, one well-behaved, one not' do
     it 'tolerates occasional errors'
-    it 're-enables a failed connector which resumes working'
 
     before do
       @connector_a = Balancir::Connector.new(:url => 'https://first-cluster.mycompany.com',

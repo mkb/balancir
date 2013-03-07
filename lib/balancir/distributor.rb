@@ -9,10 +9,12 @@ module Balancir
       @active_connectors = []
     end
 
+    # Place a connector into active rotation
     def add_connector(connector, weight)
       @active_connectors << connector
     end
 
+    # Perform HTTP request
     def get(path)
       raise NoConnectorsAvailable if @active_connectors.empty?
 
@@ -20,7 +22,5 @@ module Balancir
       @active_connectors.rotate!
       response
     end
-
-
   end
 end

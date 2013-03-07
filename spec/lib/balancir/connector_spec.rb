@@ -95,9 +95,10 @@ describe Balancir::Connector do
       @connector = connector_for_service(:fake_service)
     end
 
-    it 'counts one error for each time called' do
+    it 'counts one error for each failed invocation' do
       5.times do |index|
-        @connector.get(BARF_PATH)
+        response = @connector.get(BARF_PATH)
+        response.should be_error
         @connector.error_count.should eq(index+1)
       end
     end
@@ -124,14 +125,22 @@ describe Balancir::Connector do
       end
       @connector.request_count.should <= @connector.failure_ratio.last
     end
-
-    it 'knows when its unhealthy' do
-      @distributor = Balancir::Distributor.new
-      @distributor.fault_tolerance = 0.5
-      @connector.failure_ratio = [10, 10]
-      @connector.healthy?(@distributor).should be_false
-    end
   end
 
-  pending '#failed?'
+  describe '#failed?' do
+    before :each do
+      @connector = connector_for_service(:fake_service)
+      @connector.get(OK_PATH)
+      4.times { @connector.get(BARF_PATH) }
+    end
+
+    it 'indicates not failed before threshold is met' do
+      @connector.should_not be_failed
+    end
+
+    it 'indicates failed once threshold is met' do
+      @connector.get(BARF_PATH)
+      @connector.should be_failed
+    end
+  end
 end

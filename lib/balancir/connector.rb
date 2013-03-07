@@ -14,6 +14,7 @@ module Balancir
       clear
     end
 
+    # Perform HTTP GET request
     def get(path)
       response = Response.new()
       raw_response = @connection.request(:method => "GET", :path => path)
@@ -26,11 +27,13 @@ module Balancir
       tally(response)
     end
 
+    # Purge request history
     def clear
       @recent_errors = []
       @recent_requests = []
     end
 
+    # Record a response to our request history
     def tally(response)
       @recent_requests << response.error?
       while @recent_requests.length > @failure_ratio.last
@@ -38,33 +41,24 @@ module Balancir
       end
     end
 
+    # Number of recent requests we know about.
     def request_count
       @recent_requests.count
     end
 
+    # Number of recent errors
     def error_count
       @recent_requests.count(true)
     end
 
+    # Recent errors as a percentage of requests
     def error_rate
       error_count.to_f / request_count
     end
 
-    def clear_expired_tallies
-      [@recent_requests, @recent_errors].each do |tally|
-        # while expired?(tally.first)
-        #   tally.shift
-        # end
-      end
-    end
-
-    def healthy?(distributor)
-      # returns true if the connector has failed
-      if (self.failure_ratio[0] / self.failure_ratio[1]) < distributor.fault_tolerance
-        return true
-      else
-        return false
-      end
+    # Have we exceeded our allowable failure ratio?
+    def failed?
+      error_count >= @failure_ratio.first
     end
   end
 end
