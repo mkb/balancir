@@ -14,8 +14,9 @@ class Balancir
     end
 
     def successful?
-      return false if @exception
-      return true if [200, 404, 410].include?(status)
+      return false if exception
+      return true if [200, 307, 404, 410].include?(status)
+      return true if (300..305).include?(status)
       return false
     end
   end

@@ -6,7 +6,7 @@ describe Balancir::Response do
   FOUR_ERROR_STATUSES = (400..403).to_a + (405..409).to_a + (411..417).to_a
   FIVE_ERROR_STATUSES = (500..511).to_a + [598, 599]
   SEVEN_ERROR_STATUSES = (700..799).to_a
-  GOOD_STATUSES = [200, 404, 410]
+  GOOD_STATUSES = [200, 307, 404, 410] + (300..305).to_a
 
   describe 'basic response parsing' do
     before do
@@ -75,6 +75,12 @@ describe Balancir::Response do
         response.parse(raw_response)
         response.should be_error
       end
+    end
+    
+    it 'counts any Errno:: as an error' do
+      response = successful_response
+      response.exception = Excon::Errors::Error.new
+      response.should be_error
     end
 
     pending "more error detection" do
