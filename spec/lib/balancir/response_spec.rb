@@ -3,7 +3,10 @@ require 'balancir/response'
 
 describe Balancir::Response do
   include ResponseUtils
-  ERROR_STATUSES = (500..511).to_a + [598, 599]
+  FOUR_ERROR_STATUSES = (400..403).to_a + (405..409).to_a + (411..417).to_a
+  FIVE_ERROR_STATUSES = (500..511).to_a + [598, 599]
+  SEVEN_ERROR_STATUSES = (700..799).to_a
+  GOOD_STATUSES = [200, 404, 410]
 
   describe 'basic response parsing' do
     before do
@@ -39,7 +42,34 @@ describe Balancir::Response do
     end
 
     it 'counts 500s as errors' do
-      ERROR_STATUSES.each do |status|
+      FIVE_ERROR_STATUSES.each do |status|
+        raw_response = stub(RESPONSE_FIELDS.merge(:status => status))
+        response = Balancir::Response.new
+        response.parse(raw_response)
+        response.should be_error
+      end
+    end
+    
+    it 'does not count 200, 404, or 410 as errors' do
+      GOOD_STATUSES.each do |status|
+        raw_response = stub(RESPONSE_FIELDS.merge(:status => status))
+        response = Balancir::Response.new
+        response.parse(raw_response)
+        response.should_not be_error
+      end
+    end
+    
+    it 'counts other 400s as errors' do
+      FOUR_ERROR_STATUSES.each do |status|
+        raw_response = stub(RESPONSE_FIELDS.merge(:status => status))
+        response = Balancir::Response.new
+        response.parse(raw_response)
+        response.should be_error
+      end
+    end
+    
+    it 'counts 700s as errors' do
+      SEVEN_ERROR_STATUSES.each do |status|
         raw_response = stub(RESPONSE_FIELDS.merge(:status => status))
         response = Balancir::Response.new
         response.parse(raw_response)
@@ -48,10 +78,6 @@ describe Balancir::Response do
     end
 
     pending "more error detection" do
-      it 'does not count 404 or 410 as errors'
-      it 'counts other 400s as errors'
-      it 'counts 700s as errors'
-
       it 'counts Errno::ECONNRESET as an error'
       it 'counts Errno::ETIMEDOUT as an error'
       it 'counts Errno::ECONNREFUSED as an error'
