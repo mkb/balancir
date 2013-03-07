@@ -1,4 +1,4 @@
-module Balancir
+class Balancir
   # Represents a response from an HTTP call.
   class Response
     attr_accessor :body, :status, :headers, :exception

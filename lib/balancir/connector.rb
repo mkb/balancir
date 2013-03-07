@@ -1,7 +1,7 @@
 require 'excon'
 require 'balancir/response'
 
-module Balancir
+class Balancir
   # Represents a connection to a particular server, encapsulating the
   # underlying HTTP library.
   class Connector
@@ -14,10 +14,11 @@ module Balancir
       clear
     end
 
-    # Perform HTTP GET request
-    def get(path)
+    # Perform HTTP request
+    def request(options)
+      method = options.fetch(:method)
       response = Response.new()
-      raw_response = @connection.request(:method => "GET", :path => path)
+      raw_response = @connection.request(options)
       response.parse(raw_response)
       response
     rescue Excon::Errors::Error => e

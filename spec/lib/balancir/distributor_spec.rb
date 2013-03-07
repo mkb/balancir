@@ -3,6 +3,8 @@ require 'balancir/distributor'
 require 'balancir/connector'
 
 describe Balancir::Distributor do
+  SOME_PARAMS = {:method => :get, :path => SOME_PATH }
+
   before do
     @connector = Balancir::Connector.new(CONNECTOR_CONFIG)
     @distributor = Balancir::Distributor.new
@@ -19,8 +21,8 @@ describe Balancir::Distributor do
 
     describe 'message passing' do
       it 'passes on calls to #get' do
-        @connector.should_receive(:get).and_return(@response)
-        @distributor.get(SOME_PATH)
+        @connector.should_receive(:request).and_return(@response)
+        @distributor.request(SOME_PARAMS)
       end
 
       pending "other http methods" do
@@ -38,7 +40,7 @@ describe Balancir::Distributor do
     end
 
     it 'raises Balancir::NoConnectorsAvailable when called' do
-      expect { @distributor.get(SOME_PATH) }.to raise_error(Balancir::Distributor::NoConnectorsAvailable)
+      expect { @distributor.request(SOME_PARAMS) }.to raise_error(Balancir::Distributor::NoConnectorsAvailable)
     end
   end
 
@@ -53,11 +55,11 @@ describe Balancir::Distributor do
     end
 
     it 'distributes calls between them' do
-      @connector_a.should_receive(:get).twice.and_return(@response)
-      @connector_b.should_receive(:get).twice.and_return(@response)
+      @connector_a.should_receive(:request).twice.and_return(@response)
+      @connector_b.should_receive(:request).twice.and_return(@response)
 
       4.times do
-        @distributor.get(SOME_PATH)
+        @distributor.request(SOME_PARAMS)
       end
     end
 
@@ -70,8 +72,6 @@ describe Balancir::Distributor do
   end
 
   describe 'with two connectors, one well-behaved, one not' do
-    it 'tolerates occasional errors'
-
     before do
       @connector_a = Balancir::Connector.new(:url => 'https://first-cluster.mycompany.com',
                                              :failure_ratio => [5,10])
@@ -81,12 +81,13 @@ describe Balancir::Distributor do
       @distributor.failed_connectors = [@connector_b]
     end
 
+    it 'tolerates occasional errors'
     it 'distributes all calls to the good connector' do
-      @connector_a.should_receive(:get).exactly(4).and_return(@response)
-      @connector_b.should_not_receive(:get)
+      @connector_a.should_receive(:request).exactly(4).and_return(@response)
+      @connector_b.should_not_receive(:request)
 
       4.times do
-        @distributor.get(SOME_PATH)
+        @distributor.request(SOME_PATH)
       end
     end
 

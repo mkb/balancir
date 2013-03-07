@@ -8,6 +8,7 @@ describe Balancir::ConnectionMonitor do
   MONITOR_CONFIG = { :polling_interval_seconds => 5,
                      :ping_path => "/ping",
                      :revive_threshold => [10,10] }
+  PING_PARAMS = {:method => :get, :path => PING_PATH}
 
   before do
     @distributor = Balancir::Distributor.new
@@ -123,15 +124,15 @@ describe Balancir::ConnectionMonitor do
     end
 
     it 'tries each connection' do
-      @connector_a.should_receive(:get).with(PING_PATH).and_return(successful_response)
-      @connector_b.should_receive(:get).with(PING_PATH).and_return(successful_response)
+      @connector_a.should_receive(:request).with(PING_PARAMS).and_return(successful_response)
+      @connector_b.should_receive(:request).with(PING_PARAMS).and_return(successful_response)
       @monitor._fire
     end
 
     context 'with one working connection and one busted' do
       before do
-        @connector_a.stub(:get).with(PING_PATH).and_return(successful_response)
-        @connector_b.stub(:get).with(PING_PATH).and_return(failed_response)
+        @connector_a.stub(:request).with(PING_PARAMS).and_return(successful_response)
+        @connector_b.stub(:request).with(PING_PARAMS).and_return(failed_response)
       end
 
       it 'does reactivate the connection before the revive threshold is reached' do

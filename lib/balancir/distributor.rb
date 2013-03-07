@@ -1,4 +1,4 @@
-module Balancir
+class Balancir
   # Accepts requests and distributes them between connectors.
   class Distributor
     class NoConnectorsAvailable < StandardError; end
@@ -15,10 +15,10 @@ module Balancir
     end
 
     # Perform HTTP request
-    def get(path)
+    def request(options)
       raise NoConnectorsAvailable if @active_connectors.empty?
 
-      response = @active_connectors.first.get(path)
+      response = @active_connectors.first.request(options)
       @active_connectors.rotate!
       response
     end

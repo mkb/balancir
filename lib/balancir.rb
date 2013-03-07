@@ -1,4 +1,4 @@
 require "balancir/version"
 
-module Balancir
+class Balancir
 end

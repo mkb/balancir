@@ -1,6 +1,6 @@
 require 'celluloid'
 
-module Balancir
+class Balancir
   # Watches dead connections to see if they come back to life.
   class ConnectionMonitor
     include Celluloid
@@ -17,7 +17,7 @@ module Balancir
 
     # Start monitoring another connection
     def add_connector(connector)
-      raise ArgumentError unless connector.respond_to?(:get)
+      raise ArgumentError unless connector.respond_to?(:request)
       @responses[connector] = []
       @timer = every(@polling_interval_seconds) { poll }
     end
@@ -29,7 +29,7 @@ module Balancir
 
     def poll
       @responses.keys.each do |c|
-        response = c.get(@ping_path)
+        response = c.request(:method => :get, :path => @ping_path)
         tally_response(c, response)
         if revive_threshold_met?(c)
           reactivate(c)
