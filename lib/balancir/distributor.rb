@@ -3,10 +3,11 @@ class Balancir
   class Distributor
     class NoConnectorsAvailable < StandardError; end
 
-    attr_accessor :failed_connectors, :active_connectors, :fault_tolerance
+    attr_accessor :active_connectors, :failed_connectors
 
     def initialize
       @active_connectors = []
+      @failed_connectors = []
     end
 
     # Place a connector into active rotation
