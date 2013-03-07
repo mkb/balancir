@@ -10,13 +10,13 @@ module Balancir
     end
 
     def error?
-      return true if @exception
-      return true if (500..599).include?(status)
-      return false
+      !successful?
     end
 
     def successful?
-      !error?
+      return false if @exception
+      return true if [200, 404, 410].include?(status)
+      return false
     end
   end
 end
