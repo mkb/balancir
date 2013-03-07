@@ -5,8 +5,9 @@
 * finish http error detection
 * support all HTTP methods
 * top-level interface
-* need to support HMAC
 * distributor ratio configurable
+* Rack::Client::Handler::Balancir
+
 
 ## Later
 * idempotent

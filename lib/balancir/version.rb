@@ -1,3 +1,3 @@
-module Balancir
+class Balancir
   VERSION = "0.0.1"
 end

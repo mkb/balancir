@@ -54,7 +54,7 @@ describe Balancir::Connector do
     context 'with a working server' do
       before do
         @connector = connector_for_service(:fake_service)
-        @response = @connector.get(OK_PATH)
+        @response = @connector.request(:method => :get, :path =>  OK_PATH)
       end
 
       it 'returns a response object' do
@@ -76,11 +76,11 @@ describe Balancir::Connector do
       end
 
       it 'does not blow up' do
-        expect { @connector.get(SOME_PATH) }.to_not raise_error
+        expect { @connector.request(:method => :get, :path =>  SOME_PATH) }.to_not raise_error
       end
 
       it 'returns a response with an exception' do
-        @response = @connector.get(SOME_PATH)
+        @response = @connector.request(:method => :get, :path =>  SOME_PATH)
         @response.should respond_to(:status)
         @response.should respond_to(:headers)
         @response.should respond_to(:body)
@@ -97,7 +97,7 @@ describe Balancir::Connector do
 
     it 'counts one error for each failed invocation' do
       5.times do |index|
-        response = @connector.get(BARF_PATH)
+        response = @connector.request(:method => :get, :path =>  BARF_PATH)
         response.should be_error
         @connector.error_count.should eq(index+1)
       end
@@ -105,23 +105,23 @@ describe Balancir::Connector do
 
     it 'knows how many requests were made' do
       5.times do |index|
-        response = @connector.get(BARF_PATH)
+        response = @connector.request(:method => :get, :path =>  BARF_PATH)
         @connector.request_count.should eq(index+1)
       end
     end
 
     it 'knows what percentage of calls failed' do
-      @connector.get(BARF_PATH)
+      @connector.request(:method => :get, :path =>  BARF_PATH)
       @connector.error_rate.should eq(1)
-      @connector.get(OK_PATH)
+      @connector.request(:method => :get, :path =>  OK_PATH)
       @connector.error_rate.should eq(0.5)
-      @connector.get(OK_PATH)
+      @connector.request(:method => :get, :path =>  OK_PATH)
       @connector.error_rate.should be_within(0.01).of(0.33)
     end
 
     it 'tracks only enough requests to calculate failure ratio' do
       20.times do
-        @connector.get(OK_PATH)
+        @connector.request(:method => :get, :path =>  OK_PATH)
       end
       @connector.request_count.should <= @connector.failure_ratio.last
     end
@@ -130,8 +130,8 @@ describe Balancir::Connector do
   describe '#failed?' do
     before :each do
       @connector = connector_for_service(:fake_service)
-      @connector.get(OK_PATH)
-      4.times { @connector.get(BARF_PATH) }
+      @connector.request(:method => :get, :path =>  OK_PATH)
+      4.times { @connector.request(:method => :get, :path =>  BARF_PATH) }
     end
 
     it 'indicates not failed before threshold is met' do
@@ -139,7 +139,7 @@ describe Balancir::Connector do
     end
 
     it 'indicates failed once threshold is met' do
-      @connector.get(BARF_PATH)
+      @connector.request(:method => :get, :path =>  BARF_PATH)
       @connector.should be_failed
     end
   end

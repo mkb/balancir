@@ -20,6 +20,7 @@ Gem::Specification.new do |gem|
 
   gem.required_ruby_version     = '>= 1.9.2'
 
+  gem.add_dependency('rack-client')
   gem.add_dependency('excon')
   gem.add_dependency('celluloid')
 

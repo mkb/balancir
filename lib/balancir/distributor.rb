@@ -1,4 +1,4 @@
-module Balancir
+class Balancir
   # Accepts requests and distributes them between connectors.
   class Distributor
     class NoConnectorsAvailable < StandardError; end
