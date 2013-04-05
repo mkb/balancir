@@ -27,9 +27,7 @@ describe Balancir do
   end
 
   describe '#request' do
-    it 'requires a :method'
-    it 'requires a :path'
-    it 'accepts either :params or :body but not both'
+    it 'performs a GET'
+    it 'performs a POST'
   end
-
 end

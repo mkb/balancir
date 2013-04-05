@@ -3,40 +3,9 @@ require 'balancir/connector'
 
 require 'realweb'
 
-
 describe Balancir::Connector do
   FIRST_HOST = "http://bbc.com"
-
-  def ensure_service_running(service_name)
-    @services ||= {}
-    unless @services[service_name] and @services[service_name].running?
-      full_path = File.expand_path("./spec/support/#{service_name}.ru")
-      if RUBY_PLATFORM == 'java'
-        @services[service_name] = RealWeb.start_server_in_thread(full_path)
-      else
-        @services[service_name] = RealWeb.start_server(full_path)
-      end
-    end
-
-    @services[service_name].should be_running
-  end
-
-  def ensure_all_services_stopped
-    @services.values.each do |service|
-      begin
-        service.stop
-      rescue => e
-        warn "Exception while stopping service:"
-        ap e.backtrace
-      end
-    end
-  end
-
-  def connector_for_service(service_name)
-    @services.should have_key(service_name)
-    Balancir::Connector.new(:url  => "http://127.0.0.1:#{@services[service_name].port}",
-                            :failure_ratio => [5,5])
-  end
+  include RealWebHelper
 
   def creep_clock_forward_seconds(seconds)
     Timecop.freeze(Time.now + seconds)
