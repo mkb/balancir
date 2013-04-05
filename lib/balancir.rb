@@ -1,9 +1,10 @@
 require 'balancir/version'
 require 'balancir/distributor'
 require 'balancir/connector'
+require 'balancir/connection_monitor'
 
 class Balancir
-  attr_accessor :distributor, :failure_ratio
+  attr_accessor :distributor, :failure_ratio, :connection_monitor
 
   def initialize(config = nil)
     if config
@@ -13,6 +14,7 @@ class Balancir
 
   def configure(config)
     @distributor = Distributor.new
+    @connection_monitor = ConnectionMonitor.new(@distributor, config)
     @failure_ratio = config.fetch(:failure_ratio)
     config[:endpoints].each do |endpoint|
       weight = endpoint.delete(:weight)
@@ -21,5 +23,4 @@ class Balancir
       @distributor.add_connector(connector, weight)
     end
   end
-
 end

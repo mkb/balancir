@@ -5,9 +5,6 @@ require 'balancir/distributor'
 
 describe Balancir::ConnectionMonitor do
   include ResponseUtils
-  MONITOR_CONFIG = { :polling_interval_seconds => 5,
-                     :ping_path => "/ping",
-                     :revive_threshold => [10,10] }
   PING_PARAMS = {:method => :get, :path => PING_PATH}
 
   before do
