@@ -38,7 +38,7 @@ class Balancir
     end
 
     def reactivate(connector)
-      @distributor.add_connector(connector, 50)
+      @distributor.add_connector(connector)
       @responses.delete(connector)
     end
 

@@ -116,9 +116,9 @@ describe Balancir::ConnectionMonitor do
   describe '#poll' do
     before do
       @connector_a = Balancir::Connector.new(:url => 'https://first-environment.mycompany.com',
-                                             :failure_ratio => [5,10])
+                                             :failure_ratio => [5,10], :weight => 50)
       @connector_b = Balancir::Connector.new(:url =>'https://second-environment.mycompany.com',
-                                             :failure_ratio => [5,10])
+                                             :failure_ratio => [5,10], :weight => 50)
       @monitor.add_connector(@connector_a)
       @monitor.add_connector(@connector_b)
     end

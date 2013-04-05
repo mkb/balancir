@@ -20,11 +20,13 @@ class Balancir
     @connection_monitor = ConnectionMonitor.new(@distributor, config)
     @failure_ratio = config.fetch(:failure_ratio)
     @connection_monitor = ConnectionMonitor.new(@distributor, config)
+    @weight = config.fetch(:weight)
     config[:endpoints].each do |endpoint|
       weight = endpoint.delete(:weight)
       endpoint[:failure_ratio] = @failure_ratio
+      endpoint[:weight] = @weight
       connector = Connector.new(endpoint)
-      @distributor.add_connector(connector, weight)
+      @distributor.add_connector(connector)
     end
   end
 end

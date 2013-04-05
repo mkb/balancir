@@ -18,11 +18,12 @@ ENDPOINT_TWO = {:url => 'https://tacos-west.monkey.mk', :weight => 50 }
 
 
 CONNECTOR_CONFIG = {:url => "https://whatever.net",
-                    :failure_ratio => [5,10]}
+                    :failure_ratio => [5,10],
+                    :weight => 10}
 MONITOR_CONFIG = { :polling_interval_seconds => 5,
                    :ping_path => "/ping",
                    :revive_threshold => [10,10] }
-BALANCIR_CONFIG = {:endpoints => [ENDPOINT_ONE, ENDPOINT_TWO]}.
+BALANCIR_CONFIG = {:endpoints => [ENDPOINT_ONE, ENDPOINT_TWO], :weight => 50}.
   merge(CONNECTOR_CONFIG).merge(MONITOR_CONFIG)
 
 RESPONSE_FIELDS = {

@@ -6,12 +6,13 @@ class Balancir
   # underlying HTTP library.
   class Connector
     attr_accessor :connection, :random, :recent_errors, :recent_requests,
-      :failure_ratio, :url
+      :failure_ratio, :url, :weight
 
     def initialize(opts)
       @url = opts.fetch(:url)
       @connection = Excon.new(opts.fetch(:url))
       @failure_ratio = opts.fetch(:failure_ratio)
+      @weight = opts.fetch(:weight)
       clear
     end
 
