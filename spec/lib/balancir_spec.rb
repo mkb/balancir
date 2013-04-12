@@ -1,6 +1,14 @@
 require 'spec_helper'
 require 'balancir'
 describe Balancir do
+  ENDPOINT_ONE = {:url => 'https://tacos-east.monkey.mk', :weight => 50 }
+  ENDPOINT_TWO = {:url => 'https://tacos-west.monkey.mk', :weight => 50 }
+  BALANCIR_CONFIG = {:endpoints => [ENDPOINT_ONE, ENDPOINT_TWO],
+                     :failure_ratio => [3,10],
+                     :polling_interval_seconds => 5,
+                     :ping_path => '/ping',
+                     :revive_threshold => [10,10] }
+
   before do
     @balancir = Balancir.new(BALANCIR_CONFIG)
   end
@@ -21,13 +29,16 @@ describe Balancir do
     end
 
     it 'instantiates a connection monitor' do
-      @balancir.connection_monitor.should respond_to(:add_connector)
-      @balancir.connection_monitor.should be_alive
+      monitor = @balancir.connection_monitor
+      monitor.should be_alive
+      monitor.distributor.should eq(@balancir.distributor)
     end
   end
 
   describe '#request' do
-    it 'performs a GET'
-    it 'performs a POST'
+    context 'with two endpoints' do
+      before do
+      end
+    end
   end
 end

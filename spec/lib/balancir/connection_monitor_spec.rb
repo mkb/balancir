@@ -1,10 +1,13 @@
 require 'spec_helper'
+
 require 'balancir/connection_monitor'
 require 'balancir/connector'
 require 'balancir/distributor'
 
+require 'helpers/response_helpers'
+
 describe Balancir::ConnectionMonitor do
-  include ResponseUtils
+  include ResponseHelpers
   PING_PARAMS = {:method => :get, :path => PING_PATH}
 
   before do

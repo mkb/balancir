@@ -16,6 +16,7 @@ class Balancir
     @distributor = Distributor.new
     @connection_monitor = ConnectionMonitor.new(@distributor, config)
     @failure_ratio = config.fetch(:failure_ratio)
+    @connection_monitor = ConnectionMonitor.new(@distributor, config)
     config[:endpoints].each do |endpoint|
       weight = endpoint.delete(:weight)
       endpoint[:failure_ratio] = @failure_ratio

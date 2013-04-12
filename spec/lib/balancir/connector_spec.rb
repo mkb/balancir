@@ -1,11 +1,11 @@
 require 'spec_helper'
-require 'balancir/connector'
 
-require 'realweb'
+require 'balancir/connector'
+require 'helpers/realweb_helpers'
 
 describe Balancir::Connector do
   FIRST_HOST = "http://bbc.com"
-  include RealWebHelper
+  include RealWebHelpers
 
   def creep_clock_forward_seconds(seconds)
     Timecop.freeze(Time.now + seconds)

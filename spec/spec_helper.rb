@@ -1,4 +1,6 @@
 $: << './lib'
+$: << './spec'
+
 require 'awesome_print'
 begin
   require 'pry'
@@ -31,67 +33,3 @@ RESPONSE_FIELDS = {
 :body => %q|{"tacos":{"cheese":"cheddar"}}}|,
   :status => 200 }
 
-module ResponseUtils
-  def successful_response
-    raw_response = stub(RESPONSE_FIELDS)
-    response = Balancir::Response.new
-    response.parse(raw_response)
-    response
-  end
-
-  def failed_response
-    response = Balancir::Response.new
-    response.exception = StandardError.new
-    response
-  end
-end
-
-
-module RealWebHelper
-  def ensure_service_running(service_name, index = 0)
-    @services ||= {}
-    unless service(service_name, index) and
-      service(service_name, index).running?
-      full_path = File.expand_path("./spec/support/#{service_name}.ru")
-      service = nil
-      if RUBY_PLATFORM == 'java'
-        service = RealWeb.start_server_in_thread(full_path)
-      else
-        service = RealWeb.start_server(full_path)
-      end
-    end
-
-    add_service(service_name, index, service)
-    service(service_name, index).should be_running
-  end
-
-  def service(service_name, index = 0)
-    @services[service_name.to_s + index.to_s]
-  end
-
-  def add_service(service_name, index, service)
-    @services[service_name.to_s + index.to_s] = service
-  end
-
-  def ensure_all_services_stopped
-    @services.values.each do |service|
-      begin
-        service.stop
-      rescue => e
-        warn "Exception while stopping service:"
-        ap e.backtrace
-      end
-    end
-  end
-
-  def url_for_service(service_name, index = 0)
-    port = service(service_name, index).port
-    "http://127.0.0.1:#{port}"
-  end
-
-  def connector_for_service(service_name, index = 0)
-    service(service_name, index).should be_running
-    Balancir::Connector.new(:url  => url_for_service(service_name, index),
-                            :failure_ratio => [5,5])
-  end
-end
