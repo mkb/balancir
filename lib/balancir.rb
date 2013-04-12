@@ -4,7 +4,10 @@ require 'balancir/connector'
 require 'balancir/connection_monitor'
 
 class Balancir
+  extend Forwardable
   attr_accessor :distributor, :failure_ratio, :connection_monitor
+  def_delegator :@distributor, :request
+
 
   def initialize(config = nil)
     if config

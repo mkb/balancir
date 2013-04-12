@@ -1,10 +1,11 @@
 require 'realweb'
+require 'json'
 
 if ENV['CI'] and ENV['CI'] == 'true'
   puts "Rocking the Travs action.".light_blue
-  REALWEB_TIMEOUT = 20
+  REALWEB_OPTIONS = { :timeout => 20, :verbose => true }
 else
-  REALWEB_TIMEOUT = 2
+  REALWEB_OPTIONS = { :timeout => 20 }
 end
 
 
@@ -16,11 +17,9 @@ module RealWebHelpers
       full_path = File.expand_path("./spec/support/#{service_name}.ru")
       service = nil
       if RUBY_PLATFORM == 'java'
-        service = RealWeb.start_server_in_thread(full_path,
-          :timeout => REALWEB_TIMEOUT)
+        service = RealWeb.start_server_in_thread(full_path, REALWEB_OPTIONS)
       else
-        service = RealWeb.start_server(full_path,
-          :timeout => REALWEB_TIMEOUT)
+        service = RealWeb.start_server(full_path, REALWEB_OPTIONS)
       end
     end
 
@@ -45,6 +44,17 @@ module RealWebHelpers
         ap e.backtrace
       end
     end
+  end
+
+  def reset_fakes
+    Excon.get(url_for_service('fake_service', 0) + '/reset')
+    Excon.get(url_for_service('fake_service', 1) + '/reset')
+  end
+
+  def count(index)
+    response = Excon.get(url_for_service('fake_service', index) + '/count')
+    parsed = JSON.parse(response.body)
+    parsed['tally'].to_i
   end
 
   def url_for_service(service_name, index = 0)

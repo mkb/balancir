@@ -1,13 +1,10 @@
 require 'spec_helper'
+require 'helpers/realweb_helpers'
+
 require 'balancir'
+
 describe Balancir do
-  ENDPOINT_ONE = {:url => 'https://tacos-east.monkey.mk', :weight => 50 }
-  ENDPOINT_TWO = {:url => 'https://tacos-west.monkey.mk', :weight => 50 }
-  BALANCIR_CONFIG = {:endpoints => [ENDPOINT_ONE, ENDPOINT_TWO],
-                     :failure_ratio => [3,10],
-                     :polling_interval_seconds => 5,
-                     :ping_path => '/ping',
-                     :revive_threshold => [10,10] }
+  include RealWebHelpers
 
   before do
     @balancir = Balancir.new(BALANCIR_CONFIG)
@@ -38,6 +35,26 @@ describe Balancir do
   describe '#request' do
     context 'with two endpoints' do
       before do
+        ensure_service_running('fake_service', 0)
+        ensure_service_running('fake_service', 1)
+
+        @service_one = service('fake_service', 0)
+        @service_two = service('fake_service', 1)
+
+        @config = BALANCIR_CONFIG.merge(:endpoints =>
+          [{ :url => url_for_service('fake_service', 0)},
+          {:url => url_for_service('fake_service', 1)}])
+        reset_fakes
+
+        @balancir = Balancir.new(@config)
+        2.times do
+          @balancir.request(method:'GET', path:'/ok')
+        end
+      end
+
+      it 'sends one request to each backend' do
+        count(0).should eq(1)
+        count(1).should eq(1)
       end
     end
   end
