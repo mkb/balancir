@@ -34,7 +34,6 @@ class Balancir
       r = (@random_source.call.to_f*0.01)*@total_weight.to_f
       for range in @ranges
         if range[:range].include?(r.to_i)
-          #binding.pry
           connector = range[:connector]
         end
       end
