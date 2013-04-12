@@ -2,6 +2,19 @@ require 'spec_helper'
 require 'balancir/distributor'
 require 'balancir/connector'
 
+class FakeRandom
+  def initialize
+    @array = [6, 22, 23, 34, 35, 36, 37, 38, 39, 40]
+    @index = 0
+  end
+  
+  def rand(a)
+    @index += 1
+    @index = 0 if @index >= @array.size
+    return @array[@index]
+  end
+end
+
 describe Balancir::Distributor do
   SOME_PARAMS = {:method => :get, :path => SOME_PATH }
 
@@ -46,7 +59,8 @@ describe Balancir::Distributor do
 
   context 'with two well-behaved connectors' do
     before do
-      @distributor3 = Balancir::Distributor.new(lambda { return [5, 5, 80, 81].pop })
+      ary = [5, 5, 80, 81]
+      @distributor3 = Balancir::Distributor.new(lambda { ary.pop })
       @connector_a = Balancir::Connector.new(:url => 'https://first-cluster.mycompany.com',
                                              :failure_ratio => [5,10], :weight => 50)
       @connector_b = Balancir::Connector.new(:url =>'https://second-cluster.mycompany.com',
@@ -63,28 +77,28 @@ describe Balancir::Distributor do
         @distributor3.request(SOME_PARAMS)
       end
     end
-
-    describe 'distribute load' do
-      it 'determines the next connector to use' do
-        fake_random = [6, 22, 23, 34, 35, 36, 37, 38, 39, 40]
-        @distributor2 = Balancir::Distributor.new(lambda { return fake_random.pop })
-        @connector_a = Balancir::Connector.new(:url => 'https://first-cluster.mycompany.com',
-                                               :weight => 10, :failure_ratio => [5,10])
-        @connector_b = Balancir::Connector.new(:url => 'https://first-cluster.mycompany.com',
-                                               :weight => 20, :failure_ratio => [5,10])
-        @connector_c = Balancir::Connector.new(:url => 'https://first-cluster.mycompany.com',
-                                               :weight => 70, :failure_ratio => [5,10])
-        #@distributor2.active_connectors = [@connector_a, @connector_b, @connector_c]
-        @distributor2.add_connector(@connector_a)
-        @distributor2.add_connector(@connector_b)
-        @distributor2.add_connector(@connector_c)
-        @connector_a.should_receive(:request).exactly(1).and_return(@response)
-        @connector_b.should_receive(:request).exactly(3).and_return(@response)
-        @connector_c.should_receive(:request).exactly(7).and_return(@response)
-        
-        fake_random.each do |r|
-          @distributor2.request(SOME_PATH)
-        end
+  end
+  
+  describe 'distribute load' do
+    it 'determines the next connector to use' do
+      random = FakeRandom.new
+      @distributor2 = Balancir::Distributor.new(lambda { random.rand(100) })
+      @connector_a = Balancir::Connector.new(:url => 'https://first-cluster.mycompany.com',
+                                             :weight => 10, :failure_ratio => [5,10])
+      @connector_b = Balancir::Connector.new(:url => 'https://second-cluster.mycompany.com',
+                                             :weight => 20, :failure_ratio => [5,10])
+      @connector_c = Balancir::Connector.new(:url => 'https://third-cluster.mycompany.com',
+                                             :weight => 70, :failure_ratio => [5,10])
+      #@distributor2.active_connectors = [@connector_a, @connector_b, @connector_c]
+      @distributor2.add_connector(@connector_a)
+      @distributor2.add_connector(@connector_b)
+      @distributor2.add_connector(@connector_c)
+      @connector_a.should_receive(:request).exactly(1).and_return(@response)
+      @connector_b.should_receive(:request).exactly(2).and_return(@response)
+      @connector_c.should_receive(:request).exactly(7).and_return(@response)
+      
+      10.times do
+        @distributor2.request(SOME_PATH)
       end
     end
   end
