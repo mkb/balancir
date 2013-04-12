@@ -1,5 +1,13 @@
 require 'realweb'
 
+if ENV['CI'] and ENV['CI'] == 'true'
+  puts "Rocking the Travs action.".light_blue
+  REALWEB_TIMEOUT = 20
+else
+  REALWEB_TIMEOUT = 2
+end
+
+
 module RealWebHelpers
   def ensure_service_running(service_name, index = 0)
     @services ||= {}
@@ -8,9 +16,11 @@ module RealWebHelpers
       full_path = File.expand_path("./spec/support/#{service_name}.ru")
       service = nil
       if RUBY_PLATFORM == 'java'
-        service = RealWeb.start_server_in_thread(full_path)
+        service = RealWeb.start_server_in_thread(full_path,
+          :timeout => REALWEB_TIMEOUT)
       else
-        service = RealWeb.start_server(full_path)
+        service = RealWeb.start_server(full_path,
+          :timeout => REALWEB_TIMEOUT)
       end
     end
 

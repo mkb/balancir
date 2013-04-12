@@ -2,6 +2,7 @@ $: << './lib'
 $: << './spec'
 
 require 'awesome_print'
+require 'colorize'
 begin
   require 'pry'
 rescue LoadError
