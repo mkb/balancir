@@ -16,7 +16,7 @@ class Balancir
   end
 
   def configure(config)
-    @distributor = Distributor.new
+    @distributor = Distributor.new(config[:random_source])
     @connection_monitor = ConnectionMonitor.new(@distributor, config)
     @failure_ratio = config.fetch(:failure_ratio)
     @connection_monitor = ConnectionMonitor.new(@distributor, config)

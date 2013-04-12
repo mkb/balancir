@@ -65,7 +65,7 @@ module RealWebHelpers
   def connector_for_service(service_name, index = 0)
     service(service_name, index).should be_running
     Balancir::Connector.new(:url  => url_for_service(service_name, index),
-                            :failure_ratio => [5,5])
+                            :failure_ratio => [5,5], :weight => 10)
   end
 end
 

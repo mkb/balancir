@@ -1,7 +1,19 @@
 require 'spec_helper'
 require 'helpers/realweb_helpers'
-
 require 'balancir'
+
+class FakeRandom2
+  def initialize
+    @array = [0, 99]
+    @index = 0
+  end
+  
+  def rand(a)
+    @index += 1
+    @index = 0 if @index >= @array.size
+    return @array[@index]
+  end
+end
 
 describe Balancir do
   include RealWebHelpers
@@ -41,9 +53,11 @@ describe Balancir do
         @service_one = service('fake_service', 0)
         @service_two = service('fake_service', 1)
 
+        random = FakeRandom2.new
         @config = BALANCIR_CONFIG.merge(:endpoints =>
           [{ :url => url_for_service('fake_service', 0)},
-          {:url => url_for_service('fake_service', 1)}])
+          {:url => url_for_service('fake_service', 1)}],
+          :random_source => lambda { random.rand(100) })
         reset_fakes
 
         @balancir = Balancir.new(@config)
