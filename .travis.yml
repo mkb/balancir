@@ -3,9 +3,13 @@ rvm:
   - 1.9.2
   - 1.9.3-p392
   - 2.0.0
-  - 2.1
+  - 2.1.0
   - jruby-19mode
-  - rbx-19mode
+  - rbx
+matrix:
+  allow_failures:
+    - rvm: jruby-19mode
+    - rvm: rbx
 gemfile: Gemfile.ci
 script: bundle exec rspec -cfs
 notifications:
