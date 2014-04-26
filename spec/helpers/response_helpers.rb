@@ -1,7 +1,7 @@
 
 module ResponseHelpers
   def successful_response
-    raw_response = stub(RESPONSE_FIELDS)
+    raw_response = double(RESPONSE_FIELDS)
     response = Balancir::Response.new
     response.parse(raw_response)
     response

@@ -1,5 +1,8 @@
 require 'spec_helper'
 require 'balancir/response'
+require 'helpers/response_helpers'
+require 'excon'
+
 
 describe Balancir::Response do
   include ResponseHelpers
@@ -44,7 +47,7 @@ describe Balancir::Response do
 
     it 'counts 500s as errors' do
       FIVE_ERROR_STATUSES.each do |status|
-        raw_response = stub(RESPONSE_FIELDS.merge(:status => status))
+        raw_response = double(RESPONSE_FIELDS.merge(:status => status))
         response = Balancir::Response.new
         response.parse(raw_response)
         response.should be_error
@@ -53,7 +56,7 @@ describe Balancir::Response do
 
     it 'does not count 200, 404, or 410 as errors' do
       GOOD_STATUSES.each do |status|
-        raw_response = stub(RESPONSE_FIELDS.merge(:status => status))
+        raw_response = double(RESPONSE_FIELDS.merge(:status => status))
         response = Balancir::Response.new
         response.parse(raw_response)
         response.should_not be_error
@@ -62,7 +65,7 @@ describe Balancir::Response do
 
     it 'counts other 400s as errors' do
       FOUR_ERROR_STATUSES.each do |status|
-        raw_response = stub(RESPONSE_FIELDS.merge(:status => status))
+        raw_response = double(RESPONSE_FIELDS.merge(:status => status))
         response = Balancir::Response.new
         response.parse(raw_response)
         response.should be_error
@@ -71,7 +74,7 @@ describe Balancir::Response do
 
     it 'counts 700s as errors' do
       SEVEN_ERROR_STATUSES.each do |status|
-        raw_response = stub(RESPONSE_FIELDS.merge(:status => status))
+        raw_response = double(RESPONSE_FIELDS.merge(:status => status))
         response = Balancir::Response.new
         response.parse(raw_response)
         response.should be_error
