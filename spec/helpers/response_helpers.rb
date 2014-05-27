@@ -1,4 +1,3 @@
-
 module ResponseHelpers
   def successful_response
     raw_response = double(RESPONSE_FIELDS)
@@ -13,4 +12,3 @@ module ResponseHelpers
     response
   end
 end
-

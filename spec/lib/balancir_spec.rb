@@ -7,7 +7,7 @@ class FakeRandom2
     @array = [0, 99]
     @index = 0
   end
-  
+
   def rand(a)
     @index += 1
     @index = 0 if @index >= @array.size

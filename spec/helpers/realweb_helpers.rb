@@ -68,4 +68,3 @@ module RealWebHelpers
                             :failure_ratio => [5,5], :weight => 10)
   end
 end
-

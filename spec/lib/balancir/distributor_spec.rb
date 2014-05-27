@@ -7,7 +7,7 @@ class FakeRandom
     @array = [6, 22, 23, 34, 35, 36, 37, 38, 39, 40]
     @index = 0
   end
-  
+
   def rand(a)
     @index += 1
     @index = 0 if @index >= @array.size
@@ -78,7 +78,7 @@ describe Balancir::Distributor do
       end
     end
   end
-  
+
   describe 'distribute load' do
     it 'determines the next connector to use' do
       random = FakeRandom.new
@@ -96,7 +96,7 @@ describe Balancir::Distributor do
       @connector_a.should_receive(:request).exactly(1).and_return(@response)
       @connector_b.should_receive(:request).exactly(2).and_return(@response)
       @connector_c.should_receive(:request).exactly(7).and_return(@response)
-      
+
       10.times do
         @distributor2.request(SOME_PATH)
       end

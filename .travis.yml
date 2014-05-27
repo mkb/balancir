@@ -7,11 +7,17 @@ rvm:
   - jruby-19mode
   - rbx-2
 matrix:
+  fast_finish: true
   allow_failures:
     - rvm: jruby-19mode
-    - rvm: rbx-2
 gemfile: Gemfile.ci
 before_install: cat ~/.gemrc
 script: bundle exec rspec -cfs
 notifications:
-  irc: "irc.freenode.org#balancir"
+webhooks:
+    irc: "irc.freenode.org#balancir"
+    urls:
+      - https://webhooks.gitter.im/e/b3d095e4949f6d9febdf
+    on_success: change
+    on_failure: always
+    on_start: false

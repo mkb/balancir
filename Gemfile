@@ -7,6 +7,6 @@ group :development do
   gem 'pry'
   gem 'pry-debugger' , :platforms => 'ruby_19'
   gem 'guard'
-  gem 'guard-rspec'
+  gem 'guard-rspec', require: false
   gem 'travis-lint'
 end

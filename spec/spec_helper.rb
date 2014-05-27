@@ -32,6 +32,5 @@ RESPONSE_FIELDS = {
                "Server"=>"WEBrick/1.3.1 (Ruby/1.9.3/2012-11-10)",
                "Date"=>"Fri, 15 Feb 2013 04:20:31 GMT",
                "Connection"=>"Keep-Alive"},
-:body => %q|{"tacos":{"cheese":"cheddar"}}}|,
-  :status => 200 }
-
+  :body => %q|{"tacos":{"cheese":"cheddar"}}}|,
+    :status => 200 }
