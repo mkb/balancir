@@ -1,5 +1,5 @@
 
-guard 'rspec', cmd: 'bundle exec rspec -c',
+guard 'rspec', cmd: 'bundle exec rspec -c -f doc',
     all_after_pass: true,
     all_on_start: true do
   watch(%r{^spec/(.+)_spec\.rb$}) { |m| "spec/#{m[1]}_spec.rb" }

@@ -33,15 +33,11 @@ describe Balancir::Distributor do
     end
 
     describe 'message passing' do
-      it 'passes on calls to #get' do
-        @connector.should_receive(:request).and_return(@response)
-        @distributor.request(SOME_PARAMS)
-      end
-
-      pending "other http methods" do
-        it 'passes on calls to #post'
-        it 'passes on calls to #put'
-        it 'passes on calls to #delete'
+      [:get, :post, :put, :delete, :patch].each do |method|
+        it "passes on calls to #{method}" do
+          @connector.should_receive(:request).and_return(@response)
+          @distributor.request(SOME_PARAMS.merge(method: method))
+        end
       end
     end
   end
@@ -103,7 +99,7 @@ describe Balancir::Distributor do
     end
   end
 
-  describe 'with two connectors, one well-behaved, one not' do
+  describe 'with two connectors, one well-behaved, one failed' do
     before do
       @connector_a = Balancir::Connector.new(:url => 'https://first-cluster.mycompany.com',
                                              :failure_ratio => [5,10], :weight => 50)
@@ -114,7 +110,6 @@ describe Balancir::Distributor do
       @distributor.failed_connectors = [@connector_b]
     end
 
-    it 'tolerates occasional errors'
     it 'distributes all calls to the good connector' do
       @connector_a.should_receive(:request).exactly(4).and_return(@response)
       @connector_b.should_not_receive(:request)
